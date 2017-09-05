@@ -130,9 +130,7 @@ public class ArticleDetailFragment extends Fragment {
             mBylineView.setText(byLine);
 
             // set the body
-            // TODO: Change body view to recyclerview of paragraph textviews list with adapter
             mBodyParagraphs = breakBodyIntoParagraphs(mArticle.getBody());
-
             LinearLayoutManager manager = new LinearLayoutManager(mParentActivity);
             mRecyclerBodyView.setLayoutManager(manager);
             BodyAdapter bodyAdapter = new BodyAdapter();
