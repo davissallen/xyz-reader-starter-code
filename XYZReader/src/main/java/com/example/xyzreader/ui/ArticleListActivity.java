@@ -146,6 +146,7 @@ public class ArticleListActivity extends AppCompatActivity implements
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
         ArrayList<Article> mArticles;
+
         public Adapter(ArrayList<Article> articles) {
             mArticles = articles;
         }

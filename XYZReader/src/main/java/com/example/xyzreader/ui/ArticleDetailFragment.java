@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,9 @@ import android.widget.TextView;
 import com.example.xyzreader.R;
 import com.example.xyzreader.pojo.Article;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A fragment representing a single Article detail screen. This fragment is
@@ -31,17 +36,16 @@ public class ArticleDetailFragment extends Fragment {
 
     // Views
     private View mRootView;
-    private View mPhotoContainerView;
     private ImageView mPhotoView;
     TextView mTitleView;
     TextView mBylineView;
-    TextView mBodyView;
+    RecyclerView mRecyclerBodyView;
     ImageButton mFAB;
-    MaxWidthLinearLayout mTextContainer;
     FrameLayout mSpinnerContainer;
 
     // Cursor Info
     Article mArticle;
+    ArrayList<String> mBodyParagraphs;
 
     private boolean mIsCard;
     private Activity mParentActivity;
@@ -76,6 +80,8 @@ public class ArticleDetailFragment extends Fragment {
         if (getArguments().containsKey(ARG_ARTICLE)) {
             mArticle = getArguments().getParcelable(ARG_ARTICLE);
         }
+        mBodyParagraphs = new ArrayList<>();
+
         mIsCard = getResources().getBoolean(R.bool.detail_is_card);
         setHasOptionsMenu(true);
     }
@@ -87,11 +93,11 @@ public class ArticleDetailFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
 
         mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
-        mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
 
         mTitleView = (TextView) mRootView.findViewById(R.id.article_title);
         mBylineView = (TextView) mRootView.findViewById(R.id.article_byline);
-        mBodyView = (TextView) mRootView.findViewById(R.id.article_body);
+
+        mRecyclerBodyView = (RecyclerView) mRootView.findViewById(R.id.rv_body_text);
 
         mFAB = (ImageButton) mRootView.findViewById(R.id.share_fab);
         mFAB.setOnClickListener(new View.OnClickListener() {
@@ -105,10 +111,8 @@ public class ArticleDetailFragment extends Fragment {
         });
 
         mSpinnerContainer = (FrameLayout) mRootView.findViewById(R.id.spinner_container);
-        mTextContainer = (MaxWidthLinearLayout) mRootView.findViewById(R.id.detail_text_view);
 
         bindViews();
-
         return mRootView;
     }
 
@@ -127,7 +131,14 @@ public class ArticleDetailFragment extends Fragment {
 
             // set the body
             // TODO: Change body view to recyclerview of paragraph textviews list with adapter
-            mBodyView.setText(mArticle.getBody());
+            mBodyParagraphs = breakBodyIntoParagraphs(mArticle.getBody());
+
+            LinearLayoutManager manager = new LinearLayoutManager(mParentActivity);
+            mRecyclerBodyView.setLayoutManager(manager);
+            BodyAdapter bodyAdapter = new BodyAdapter();
+            bodyAdapter.setHasStableIds(true);
+            mRecyclerBodyView.setAdapter(bodyAdapter);
+            mRecyclerBodyView.setHasFixedSize(true);
 
             // set the image
             String imageUrl = mArticle.getPhotoUrl();
@@ -137,20 +148,58 @@ public class ArticleDetailFragment extends Fragment {
 
             hideSpinner();
         } else {
-            mTextContainer.setVisibility(View.GONE);
-
             showSpinner();
         }
     }
 
+    private ArrayList<String> breakBodyIntoParagraphs(String body) {
+        ArrayList<String> paragraphs = new ArrayList<>(Arrays.asList(body.split("\n")));
+
+        return paragraphs;
+    }
+
     private void hideSpinner() {
-        mTextContainer.setVisibility(View.VISIBLE);
+        mRecyclerBodyView.setVisibility(View.VISIBLE);
         mFAB.setVisibility(View.VISIBLE);
         mSpinnerContainer.setVisibility(View.INVISIBLE);
     }
     private void showSpinner() {
-        mTextContainer.setVisibility(View.INVISIBLE);
+        mRecyclerBodyView.setVisibility(View.INVISIBLE);
         mFAB.setVisibility(View.INVISIBLE);
         mSpinnerContainer.setVisibility(View.VISIBLE);
+    }
+
+    private class BodyAdapter extends RecyclerView.Adapter<ParagraphViewHolder> {
+        @Override
+        public ParagraphViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.paragraph, parent, false);
+            return new ParagraphViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ParagraphViewHolder holder, int position) {
+            if (mBodyParagraphs != null && !mBodyParagraphs.isEmpty()) {
+                holder.paragraphView.setText(mBodyParagraphs.get(position));
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            if (mBodyParagraphs != null) {
+                return mBodyParagraphs.size();
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    private static class ParagraphViewHolder extends RecyclerView.ViewHolder {
+        private TextView paragraphView;
+
+        public ParagraphViewHolder(View itemView) {
+            super(itemView);
+            paragraphView = (TextView) itemView.findViewById(R.id.paragraph);
+        }
     }
 }
