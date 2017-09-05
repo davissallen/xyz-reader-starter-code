@@ -101,6 +101,7 @@ public class ArticleDetailActivity extends AppCompatActivity
         mPagerAdapter.notifyDataSetChanged();
 
         mPager.setCurrentItem(mInitialPosition, false);
+        mPager.setPageTransformer(true, new DepthPageTransformer());
     }
 
     @Override

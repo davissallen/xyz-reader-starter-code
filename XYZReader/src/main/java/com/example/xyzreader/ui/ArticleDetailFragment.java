@@ -145,6 +145,7 @@ public class ArticleDetailFragment extends Fragment {
             }
 
             hideSpinner();
+
         } else {
             showSpinner();
         }
@@ -194,9 +195,11 @@ public class ArticleDetailFragment extends Fragment {
 
     private static class ParagraphViewHolder extends RecyclerView.ViewHolder {
         private TextView paragraphView;
+//        private View topView;
 
         public ParagraphViewHolder(View itemView) {
             super(itemView);
+//            topView = (View) itemView.findViewById(R.id.top_view);
             paragraphView = (TextView) itemView.findViewById(R.id.paragraph);
         }
     }
