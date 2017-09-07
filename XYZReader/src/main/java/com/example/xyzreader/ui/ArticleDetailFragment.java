@@ -9,6 +9,7 @@ import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -235,6 +236,11 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
 
         @Override
         public void onBindViewHolder(ParagraphViewHolder holder, int position) {
+            Log.d(TAG, "position: " + position);
+            Log.d(TAG, "adapter position: " + holder.getAdapterPosition());
+            Log.d(TAG, "layout position: " + holder.getLayoutPosition());
+            Log.d(TAG, "");
+
             if (mBodyParagraphs != null && !mBodyParagraphs.isEmpty()) {
                 holder.paragraphView.setText(mBodyParagraphs.get(position));
             }
