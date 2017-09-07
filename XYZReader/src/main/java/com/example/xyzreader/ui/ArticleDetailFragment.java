@@ -185,6 +185,8 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
         int upContainerPx;
         int navBarHeightPx;
 
+        boolean isPortrait = mParentActivity.getResources().getBoolean(R.bool.isPortrait);
+
         // get screen height
         Display display = mParentActivity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -195,10 +197,18 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
         metabarHeightPx = (int) (3 * mParentActivity.getResources().getDimension(R.dimen.detail_metabar_vert_padding));
 
         // get up container height
-        upContainerPx = mUpContainer.getHeight();
+        if (mUpContainer != null) {
+            upContainerPx = mUpContainer.getHeight();
+        } else {
+            upContainerPx = 0;
+        }
 
         // get nav bar height
-        navBarHeightPx = getNavigationBarSize(mParentActivity).y;
+        if (isPortrait) {
+            navBarHeightPx = getNavigationBarSize(mParentActivity).y;
+        } else {
+            navBarHeightPx = 0;
+        }
 
         return screenHeightPx - metabarHeightPx - upContainerPx - navBarHeightPx;
     }
