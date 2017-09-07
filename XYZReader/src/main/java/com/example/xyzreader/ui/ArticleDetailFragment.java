@@ -1,24 +1,31 @@
 package com.example.xyzreader.ui;
 
-import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.pojo.Article;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -35,6 +42,7 @@ public class ArticleDetailFragment extends Fragment {
     public static final String ARG_ARTICLE = "article";
 
     // Views
+    private FrameLayout mUpContainer;
     private View mRootView;
     private ImageView mPhotoView;
     TextView mTitleView;
@@ -42,13 +50,14 @@ public class ArticleDetailFragment extends Fragment {
     RecyclerView mRecyclerBodyView;
     ImageButton mFAB;
     FrameLayout mSpinnerContainer;
+    private ScrollView mHidePhotoScrollView;
 
     // Cursor Info
     Article mArticle;
     ArrayList<String> mBodyParagraphs;
 
     private boolean mIsCard;
-    private Activity mParentActivity;
+    private AppCompatActivity mParentActivity;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -68,7 +77,8 @@ public class ArticleDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mParentActivity = getActivity();
+        mParentActivity = (AppCompatActivity) getActivity();
+        mUpContainer = (FrameLayout) mParentActivity.findViewById(R.id.up_container);
 
         // TODO: See what this does ...
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -93,6 +103,8 @@ public class ArticleDetailFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
 
         mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
+
+        mHidePhotoScrollView = (ScrollView) mRootView.findViewById(R.id.sv_hide_photo);
 
         mTitleView = (TextView) mRootView.findViewById(R.id.article_title);
         mBylineView = (TextView) mRootView.findViewById(R.id.article_byline);
@@ -122,6 +134,12 @@ public class ArticleDetailFragment extends Fragment {
         }
 
         if (mArticle != null) {
+
+//            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mHidePhotoScrollView.getLayoutParams();
+//            int photoHeight = (int)(mParentActivity.getResources().getDimension(R.dimen.detail_photo_height));
+//            layoutParams.bottomMargin = -photoHeight;
+//            mHidePhotoScrollView.setLayoutParams(layoutParams);
+
             // set the title line
             mTitleView.setText(mArticle.getTitle());
 
@@ -136,6 +154,12 @@ public class ArticleDetailFragment extends Fragment {
             BodyAdapter bodyAdapter = new BodyAdapter();
             bodyAdapter.setHasStableIds(true);
             mRecyclerBodyView.setAdapter(bodyAdapter);
+
+            // set height for recyclerview
+            ViewGroup.LayoutParams params = mRecyclerBodyView.getLayoutParams();
+            params.height = getPxHeightForRecyclerView();
+            mRecyclerBodyView.setLayoutParams(params);
+
             mRecyclerBodyView.setHasFixedSize(true);
 
             // set the image
@@ -149,6 +173,31 @@ public class ArticleDetailFragment extends Fragment {
         } else {
             showSpinner();
         }
+    }
+
+    private int getPxHeightForRecyclerView() {
+        // set height of recyclerview to height of screen - meta bar height - up bar containter height
+        int screenHeightPx;
+        int metabarHeightPx;
+        int upContainerPx;
+        int navBarHeightPx;
+
+        // get screen height
+        Display display = mParentActivity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenHeightPx = size.y;
+
+        // get meta bar height
+        metabarHeightPx = (int) (3 * mParentActivity.getResources().getDimension(R.dimen.detail_metabar_vert_padding));
+
+        // get up container height
+        upContainerPx = mUpContainer.getHeight();
+
+        // get nav bar height
+        navBarHeightPx = getNavigationBarSize(mParentActivity).y;
+
+        return screenHeightPx - metabarHeightPx - upContainerPx - navBarHeightPx;
     }
 
     private ArrayList<String> breakBodyIntoParagraphs(String body) {
@@ -202,5 +251,48 @@ public class ArticleDetailFragment extends Fragment {
 //            topView = (View) itemView.findViewById(R.id.top_view);
             paragraphView = (TextView) itemView.findViewById(R.id.paragraph);
         }
+    }
+
+    public static Point getNavigationBarSize(Context context) {
+        Point appUsableSize = getAppUsableScreenSize(context);
+        Point realScreenSize = getRealScreenSize(context);
+
+        // navigation bar on the right
+        if (appUsableSize.x < realScreenSize.x) {
+            return new Point(realScreenSize.x - appUsableSize.x, appUsableSize.y);
+        }
+
+        // navigation bar at the bottom
+        if (appUsableSize.y < realScreenSize.y) {
+            return new Point(appUsableSize.x, realScreenSize.y - appUsableSize.y);
+        }
+
+        // navigation bar is not present
+        return new Point();
+    }
+
+    public static Point getAppUsableScreenSize(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size;
+    }
+
+    public static Point getRealScreenSize(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+
+        if (Build.VERSION.SDK_INT >= 17) {
+            display.getRealSize(size);
+        } else if (Build.VERSION.SDK_INT >= 14) {
+            try {
+                size.x = (Integer) Display.class.getMethod("getRawWidth").invoke(display);
+                size.y = (Integer) Display.class.getMethod("getRawHeight").invoke(display);
+            } catch (IllegalAccessException e) {} catch (InvocationTargetException e) {} catch (NoSuchMethodException e) {}
+        }
+
+        return size;
     }
 }
