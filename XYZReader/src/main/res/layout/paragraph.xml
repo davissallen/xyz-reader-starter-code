@@ -4,10 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/detail_photo_height" />-->
-
     <TextView
         android:id="@+id/paragraph"
         android:layout_width="match_parent"

@@ -9,7 +9,6 @@ import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -205,9 +204,9 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
     }
 
     private ArrayList<String> breakBodyIntoParagraphs(String body) {
-        ArrayList<String> paragraphs = new ArrayList<>(Arrays.asList(body.split("\n")));
+        ArrayList<String> paragraphList = new ArrayList<>(Arrays.asList(body.split("\n")));
 
-        return paragraphs;
+        return paragraphList;
     }
 
     private void hideSpinner() {
@@ -227,6 +226,18 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
     }
 
     private class BodyAdapter extends RecyclerView.Adapter<ParagraphViewHolder> {
+
+        @Override
+        public void onViewAttachedToWindow(ParagraphViewHolder holder) {
+            super.onViewAttachedToWindow(holder);
+            int position = holder.getAdapterPosition();
+
+            if (mBodyParagraphs != null && !mBodyParagraphs.isEmpty()) {
+                String paragraph = mBodyParagraphs.get(position);
+                holder.paragraphView.setText(paragraph);
+            }
+        }
+
         @Override
         public ParagraphViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
@@ -235,16 +246,7 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
         }
 
         @Override
-        public void onBindViewHolder(ParagraphViewHolder holder, int position) {
-            Log.d(TAG, "position: " + position);
-            Log.d(TAG, "adapter position: " + holder.getAdapterPosition());
-            Log.d(TAG, "layout position: " + holder.getLayoutPosition());
-            Log.d(TAG, "");
-
-            if (mBodyParagraphs != null && !mBodyParagraphs.isEmpty()) {
-                holder.paragraphView.setText(mBodyParagraphs.get(position));
-            }
-        }
+        public void onBindViewHolder(ParagraphViewHolder holder, int position) {}
 
         @Override
         public int getItemCount() {
