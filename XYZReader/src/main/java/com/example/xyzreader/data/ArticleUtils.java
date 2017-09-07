@@ -47,7 +47,7 @@ public class ArticleUtils {
             String body = cursor.getString(ArticleLoader.Query.BODY);
             body = body.replaceAll("(\r\n){2,}", "\n\n");
             body = body.replace("\r\n", " ");
-            body = body.replaceAll("[ ]{2,}", "\n");
+            body = body.replaceAll("[ ]{4,}", "\n");
 
             // date
             String date;

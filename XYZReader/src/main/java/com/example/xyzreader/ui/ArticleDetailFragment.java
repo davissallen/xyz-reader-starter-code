@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,7 +46,7 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
     TextView mTitleView;
     TextView mBylineView;
     RecyclerView mRecyclerBodyView;
-    ImageButton mFAB;
+    FloatingActionButton mFAB;
     FrameLayout mSpinnerContainer;
     private ObservableScrollView mHidePhotoScrollView;
     private ScrollDisablingLinearLayoutManager mScrollableManager;
@@ -110,7 +110,7 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
 
         mRecyclerBodyView = (RecyclerView) mRootView.findViewById(R.id.rv_body_text);
 
-        mFAB = (ImageButton) mRootView.findViewById(R.id.share_fab);
+        mFAB = (FloatingActionButton) mRootView.findViewById(R.id.share_fab);
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
