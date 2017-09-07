@@ -89,6 +89,9 @@
                 android:id="@+id/rv_body_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingTop="@dimen/body_padding"
+                android:paddingStart="@dimen/body_padding"
+                android:paddingEnd="@dimen/body_padding"
                 android:background="@color/cardview_light_background">
 
             </android.support.v7.widget.RecyclerView>
