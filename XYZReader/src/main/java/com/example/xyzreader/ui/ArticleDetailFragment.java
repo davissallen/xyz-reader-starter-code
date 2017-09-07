@@ -1,19 +1,16 @@
 package com.example.xyzreader.ui;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -33,7 +30,7 @@ import static com.example.xyzreader.ui.UIUtils.getNavigationBarSize;
  * either contained in a {@link ArticleListActivity} in two-pane mode (on
  * tablets) or a {@link ArticleDetailActivity} on handsets.
  */
-public class ArticleDetailFragment extends Fragment implements ObservableScrollView.Callbacks{
+public class ArticleDetailFragment extends Fragment {
     // Log Tag
     private static final String TAG = "ArticleDetailFragment";
 
@@ -46,11 +43,12 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
     private ImageView mPhotoView;
     TextView mTitleView;
     TextView mBylineView;
-    RecyclerView mRecyclerBodyView;
+//    RecyclerView mRecyclerBodyView;
     ImageButton mFAB;
     FrameLayout mSpinnerContainer;
     private ObservableScrollView mHidePhotoScrollView;
-    private ScrollDisablingLinearLayoutManager mScrollableManager;
+//    private ScrollDisablingLinearLayoutManager mScrollableManager;
+    private WebView mWebView;
 
     // Cursor Info
     Article mArticle;
@@ -109,7 +107,8 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
         mTitleView = (TextView) mRootView.findViewById(R.id.article_title);
         mBylineView = (TextView) mRootView.findViewById(R.id.article_byline);
 
-        mRecyclerBodyView = (RecyclerView) mRootView.findViewById(R.id.rv_body_text);
+//        mRecyclerBodyView = (RecyclerView) mRootView.findViewById(R.id.rv_body_text);
+        mWebView = (WebView) mRootView.findViewById(R.id.webview);
 
         mFAB = (ImageButton) mRootView.findViewById(R.id.share_fab);
         mFAB.setOnClickListener(new View.OnClickListener() {
@@ -148,21 +147,21 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
             mBylineView.setText(byLine);
 
             // set the body
-            mBodyParagraphs = breakBodyIntoParagraphs(mArticle.getBody());
+//            mBodyParagraphs = breakBodyIntoParagraphs(mArticle.getBody());
+            mWebView.loadDataWithBaseURL("", mArticle.getBody(), "text/html", "UTF-8", "");
 
-            mScrollableManager = new ScrollDisablingLinearLayoutManager(mParentActivity);
-            mScrollableManager.setScrollEnabled(false);
-            mRecyclerBodyView.setLayoutManager(mScrollableManager);
-            BodyAdapter bodyAdapter = new BodyAdapter();
-            bodyAdapter.setHasStableIds(true);
-            mRecyclerBodyView.setAdapter(bodyAdapter);
+//            mScrollableManager = new ScrollDisablingLinearLayoutManager(mParentActivity);
+//            mScrollableManager.setScrollEnabled(false);
+//            mRecyclerBodyView.setLayoutManager(mScrollableManager);
+//            BodyAdapter bodyAdapter = new BodyAdapter();
+//            bodyAdapter.setHasStableIds(true);
+//            mRecyclerBodyView.setAdapter(bodyAdapter);
 
             // set height for recyclerview
-            ViewGroup.LayoutParams params = mRecyclerBodyView.getLayoutParams();
-            params.height = getPxHeightForRecyclerView();
-            mRecyclerBodyView.setLayoutParams(params);
-
-            mRecyclerBodyView.setHasFixedSize(true);
+//            ViewGroup.LayoutParams params = mRecyclerBodyView.getLayoutParams();
+//            params.height = getPxHeightForRecyclerView();
+//            mRecyclerBodyView.setLayoutParams(params);
+//            mRecyclerBodyView.setHasFixedSize(true);
 
             // set the image
             String imageUrl = mArticle.getPhotoUrl();
@@ -170,7 +169,7 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
                 Picasso.with(getActivity()).load(imageUrl).into(mPhotoView);
             }
 
-            mHidePhotoScrollView.setCallbacks(this);
+//            mHidePhotoScrollView.setCallbacks(this);
 
             hideSpinner();
 
@@ -211,75 +210,80 @@ public class ArticleDetailFragment extends Fragment implements ObservableScrollV
     }
 
     private void hideSpinner() {
-        mRecyclerBodyView.setVisibility(View.VISIBLE);
+//        mRecyclerBodyView.setVisibility(View.VISIBLE);
+
         mFAB.setVisibility(View.VISIBLE);
         mSpinnerContainer.setVisibility(View.INVISIBLE);
     }
     private void showSpinner() {
-        mRecyclerBodyView.setVisibility(View.INVISIBLE);
+//        mRecyclerBodyView.setVisibility(View.INVISIBLE);
         mFAB.setVisibility(View.INVISIBLE);
         mSpinnerContainer.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onScrollChanged(boolean enableScrolling) {
-        mScrollableManager.setScrollEnabled(enableScrolling);
-    }
+//    @Override
+//    public void onScrollChanged(boolean enableScrolling) {
+////        mScrollableManager.setScrollEnabled(enableScrolling);
+//    }
 
-    private class BodyAdapter extends RecyclerView.Adapter<ParagraphViewHolder> {
-        @Override
-        public ParagraphViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.paragraph, parent, false);
-            return new ParagraphViewHolder(view);
-        }
+//    private class BodyAdapter extends RecyclerView.Adapter<ParagraphViewHolder> {
+//        @Override
+//        public ParagraphViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//            View view = LayoutInflater.from(parent.getContext())
+//                    .inflate(R.layout.paragraph, parent, false);
+//            return new ParagraphViewHolder(view);
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(ParagraphViewHolder holder, int position) {
+//            Log.d(TAG, "position: " + position);
+//            Log.d(TAG, "adapter position: " + holder.getAdapterPosition());
+//            Log.d(TAG, "layout position: " + holder.getLayoutPosition());
+//            Log.d(TAG, "");
+//
+////            if (mBodyParagraphs != null && !mBodyParagraphs.isEmpty()) {
+////                holder.paragraphView.setText(mBodyParagraphs.get(position));
+////            }
+//
+//            holder.paragraphView.loadData(mArticle.getBody(), "text/html; charset=utf-8", "utf-8");
+//
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return 1;
+////            if (mBodyParagraphs != null) {
+////                return mBodyParagraphs.size();
+////            } else {
+////                return 0;
+////            }
+//        }
+//    }
 
-        @Override
-        public void onBindViewHolder(ParagraphViewHolder holder, int position) {
-            Log.d(TAG, "position: " + position);
-            Log.d(TAG, "adapter position: " + holder.getAdapterPosition());
-            Log.d(TAG, "layout position: " + holder.getLayoutPosition());
-            Log.d(TAG, "");
+//    private static class ParagraphViewHolder extends RecyclerView.ViewHolder {
+//        private WebView paragraphView;
+//
+//        public ParagraphViewHolder(View itemView) {
+//            super(itemView);
+//            paragraphView = (WebView) itemView.findViewById(R.id.paragraph);
+//        }
+//    }
 
-            if (mBodyParagraphs != null && !mBodyParagraphs.isEmpty()) {
-                holder.paragraphView.setText(mBodyParagraphs.get(position));
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            if (mBodyParagraphs != null) {
-                return mBodyParagraphs.size();
-            } else {
-                return 0;
-            }
-        }
-    }
-
-    private static class ParagraphViewHolder extends RecyclerView.ViewHolder {
-        private TextView paragraphView;
-
-        public ParagraphViewHolder(View itemView) {
-            super(itemView);
-            paragraphView = (TextView) itemView.findViewById(R.id.paragraph);
-        }
-    }
-
-    public class ScrollDisablingLinearLayoutManager extends LinearLayoutManager {
-        private boolean isScrollEnabled = true;
-
-        public ScrollDisablingLinearLayoutManager(Context context) {
-            super(context);
-        }
-
-        public void setScrollEnabled(boolean flag) {
-            this.isScrollEnabled = flag;
-        }
-
-        @Override
-        public boolean canScrollVertically() {
-            //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
-            return isScrollEnabled && super.canScrollVertically();
-        }
-    }
+//    public class ScrollDisablingLinearLayoutManager extends LinearLayoutManager {
+//        private boolean isScrollEnabled = true;
+//
+//        public ScrollDisablingLinearLayoutManager(Context context) {
+//            super(context);
+//        }
+//
+//        public void setScrollEnabled(boolean flag) {
+//            this.isScrollEnabled = flag;
+//        }
+//
+//        @Override
+//        public boolean canScrollVertically() {
+//            //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
+//            return isScrollEnabled && super.canScrollVertically();
+//        }
+//    }
 }

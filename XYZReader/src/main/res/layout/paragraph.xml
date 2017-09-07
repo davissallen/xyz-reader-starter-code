@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--&lt;!&ndash;<View&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="@dimen/detail_photo_height" />&ndash;&gt;-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/paragraph"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
+
+<!--</LinearLayout>-->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/detail_photo_height" />-->
-
-    <TextView
-        android:id="@+id/paragraph"
+    <WebView
+        android:id="@+id/webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
-</LinearLayout>
+</ScrollView>

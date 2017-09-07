@@ -85,13 +85,25 @@
                     android:textColor="@color/primary_light" />
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_body_text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/cardview_light_background">
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/rv_body_text"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@color/cardview_light_background">-->
 
-            </android.support.v7.widget.RecyclerView>
+            <!--</android.support.v7.widget.RecyclerView>-->
+
+            <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <WebView
+                    android:id="@+id/webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </ScrollView>
 
         </LinearLayout>
     </com.example.xyzreader.ui.ObservableScrollView>
