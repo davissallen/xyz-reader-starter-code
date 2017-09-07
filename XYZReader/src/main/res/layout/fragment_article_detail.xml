@@ -1,6 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/nav_bar_height"
     android:background="@color/white">
 
     <ImageButton
@@ -16,75 +17,84 @@
         android:src="@drawable/ic_share"
         android:stateListAnimator="@anim/fab_state_list_anim" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout
+        android:id="@+id/photo_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="@dimen/detail_photo_height"
+        android:background="@color/photo_placeholder"
+        android:transitionName="@string/transitionImage">
 
-        <FrameLayout
-            android:id="@+id/photo_container"
+        <ImageView
+            android:id="@+id/photo"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/detail_photo_height"
-            android:background="@color/photo_placeholder"
-            android:transitionName="@string/transitionImage">
+            android:layout_height="match_parent"
+            android:contentDescription="@string/a11y_article_detail_image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/testimag" />
 
-            <ImageView
-                android:id="@+id/photo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/a11y_article_detail_image"
-                android:scaleType="centerCrop"
-                android:src="@drawable/testimag" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/photo_background_protection_top" />
+
+    </FrameLayout>
+
+    <com.example.xyzreader.ui.ObservableScrollView
+        android:id="@+id/sv_hide_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/photo_background_protection_top" />
+                android:layout_height="@dimen/detail_photo_height" />
 
-        </FrameLayout>
-
-
-        <LinearLayout
-            android:id="@+id/meta_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#333"
-            android:elevation="4dp"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/detail_metabar_vert_padding"
-            android:paddingLeft="@dimen/detail_inner_horiz_margin"
-            android:paddingRight="@dimen/detail_inner_horiz_margin"
-            android:paddingTop="@dimen/detail_metabar_vert_padding">
-
-            <TextView
-                android:id="@+id/article_title"
-                style="?android:attr/textAppearanceLarge"
+            <LinearLayout
+                android:id="@+id/meta_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
-                android:lineSpacingMultiplier="0.9"
-                android:paddingBottom="@dimen/detail_metabar_title_bottom_padding"
-                android:textColor="#fff"
-                android:textSize="@dimen/detail_title_text_size"
-                android:textStyle="bold" />
+                android:background="#333"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/detail_metabar_vert_padding"
+                android:paddingLeft="@dimen/detail_inner_horiz_margin"
+                android:paddingRight="@dimen/detail_inner_horiz_margin"
+                android:paddingTop="@dimen/detail_metabar_vert_padding">
 
-            <TextView
-                android:id="@+id/article_byline"
-                style="?android:attr/textAppearanceSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/primary_light" />
+                <TextView
+                    android:id="@+id/article_title"
+                    style="?android:attr/textAppearanceLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:lineSpacingMultiplier="0.9"
+                    android:paddingBottom="@dimen/detail_metabar_title_bottom_padding"
+                    android:textColor="#fff"
+                    android:textSize="@dimen/detail_title_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/article_byline"
+                    style="?android:attr/textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primary_light" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_body_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/cardview_light_background">
+
+            </android.support.v7.widget.RecyclerView>
+
         </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_body_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/cardview_light_background">
-
-        </android.support.v7.widget.RecyclerView>
-
-    </LinearLayout>
+    </com.example.xyzreader.ui.ObservableScrollView>
 
     <FrameLayout
         android:id="@+id/spinner_container"

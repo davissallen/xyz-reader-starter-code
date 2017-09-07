@@ -18,7 +18,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
@@ -34,7 +33,7 @@ import java.util.Arrays;
  * either contained in a {@link ArticleListActivity} in two-pane mode (on
  * tablets) or a {@link ArticleDetailActivity} on handsets.
  */
-public class ArticleDetailFragment extends Fragment {
+public class ArticleDetailFragment extends Fragment implements ObservableScrollView.Callbacks{
     // Log Tag
     private static final String TAG = "ArticleDetailFragment";
 
@@ -50,7 +49,8 @@ public class ArticleDetailFragment extends Fragment {
     RecyclerView mRecyclerBodyView;
     ImageButton mFAB;
     FrameLayout mSpinnerContainer;
-    private ScrollView mHidePhotoScrollView;
+    private ObservableScrollView mHidePhotoScrollView;
+    private ScrollDisablingLinearLayoutManager mScrollableManager;
 
     // Cursor Info
     Article mArticle;
@@ -104,7 +104,7 @@ public class ArticleDetailFragment extends Fragment {
 
         mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
 
-        mHidePhotoScrollView = (ScrollView) mRootView.findViewById(R.id.sv_hide_photo);
+        mHidePhotoScrollView = (ObservableScrollView) mRootView.findViewById(R.id.sv_hide_photo);
 
         mTitleView = (TextView) mRootView.findViewById(R.id.article_title);
         mBylineView = (TextView) mRootView.findViewById(R.id.article_byline);
@@ -149,8 +149,10 @@ public class ArticleDetailFragment extends Fragment {
 
             // set the body
             mBodyParagraphs = breakBodyIntoParagraphs(mArticle.getBody());
-            LinearLayoutManager manager = new LinearLayoutManager(mParentActivity);
-            mRecyclerBodyView.setLayoutManager(manager);
+
+            mScrollableManager = new ScrollDisablingLinearLayoutManager(mParentActivity);
+            mScrollableManager.setScrollEnabled(false);
+            mRecyclerBodyView.setLayoutManager(mScrollableManager);
             BodyAdapter bodyAdapter = new BodyAdapter();
             bodyAdapter.setHasStableIds(true);
             mRecyclerBodyView.setAdapter(bodyAdapter);
@@ -167,6 +169,8 @@ public class ArticleDetailFragment extends Fragment {
             if (imageUrl != null) {
                 Picasso.with(getActivity()).load(imageUrl).into(mPhotoView);
             }
+
+            mHidePhotoScrollView.setCallbacks(this);
 
             hideSpinner();
 
@@ -217,6 +221,11 @@ public class ArticleDetailFragment extends Fragment {
         mSpinnerContainer.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onScrollChanged(boolean enableScrolling) {
+        mScrollableManager.setScrollEnabled(enableScrolling);
+    }
+
     private class BodyAdapter extends RecyclerView.Adapter<ParagraphViewHolder> {
         @Override
         public ParagraphViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -244,11 +253,9 @@ public class ArticleDetailFragment extends Fragment {
 
     private static class ParagraphViewHolder extends RecyclerView.ViewHolder {
         private TextView paragraphView;
-//        private View topView;
 
         public ParagraphViewHolder(View itemView) {
             super(itemView);
-//            topView = (View) itemView.findViewById(R.id.top_view);
             paragraphView = (TextView) itemView.findViewById(R.id.paragraph);
         }
     }
@@ -294,5 +301,23 @@ public class ArticleDetailFragment extends Fragment {
         }
 
         return size;
+    }
+
+    public class ScrollDisablingLinearLayoutManager extends LinearLayoutManager {
+        private boolean isScrollEnabled = true;
+
+        public ScrollDisablingLinearLayoutManager(Context context) {
+            super(context);
+        }
+
+        public void setScrollEnabled(boolean flag) {
+            this.isScrollEnabled = flag;
+        }
+
+        @Override
+        public boolean canScrollVertically() {
+            //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
+            return isScrollEnabled && super.canScrollVertically();
+        }
     }
 }

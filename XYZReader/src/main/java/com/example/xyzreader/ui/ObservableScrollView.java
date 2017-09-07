@@ -17,8 +17,8 @@
 package com.example.xyzreader.ui;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ScrollView;
 
 /**
@@ -26,6 +26,7 @@ import android.widget.ScrollView;
  */
 public class ObservableScrollView extends ScrollView {
     private Callbacks mCallbacks;
+    private boolean mIsScrolledUp;
 
     public ObservableScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,14 +36,18 @@ public class ObservableScrollView extends ScrollView {
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (t != 0) {
-                setElevation(2);
-            }
-        }
-
         if (mCallbacks != null) {
-            mCallbacks.onScrollChanged();
+
+            // Grab the last child placed in the ScrollView, we need it to determinate the bottom position.
+            View view = (View) getChildAt(getChildCount()-1);
+
+            // Calculate the scrolldiff
+            int diff = (view.getBottom()-(getHeight()+getScrollY()));
+
+            // if diff is zero, then the bottom has been reached
+            mIsScrolledUp = (diff == 0);
+
+            mCallbacks.onScrollChanged(mIsScrolledUp);
         }
     }
 
@@ -52,7 +57,7 @@ public class ObservableScrollView extends ScrollView {
         int scrollY = getScrollY();
         // hack to call onScrollChanged on screen rotate
         if (scrollY > 0 && mCallbacks != null) {
-            mCallbacks.onScrollChanged();
+            mCallbacks.onScrollChanged(mIsScrolledUp);
         }
     }
 
@@ -66,6 +71,6 @@ public class ObservableScrollView extends ScrollView {
     }
 
     public static interface Callbacks {
-        public void onScrollChanged();
+        public void onScrollChanged(boolean shouldEnableScrolling);
     }
 }
