@@ -67,8 +67,10 @@ public class ArticleUtils {
             String thumbnailUrl = cursor.getString(ArticleLoader.Query.THUMB_URL);
             // photoUrl
             String photoUrl = cursor.getString(ArticleLoader.Query.PHOTO_URL);
+            // aspectRatio
+            float aspectRatio = cursor.getFloat(ArticleLoader.Query.ASPECT_RATIO);
 
-            Article article = new Article(id, title, date, author, body, thumbnailUrl, photoUrl);
+            Article article = new Article(id, title, date, author, body, thumbnailUrl, photoUrl, aspectRatio);
             articles.add(article);
 
             cursor.moveToNext();

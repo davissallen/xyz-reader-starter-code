@@ -17,8 +17,9 @@ public class Article implements Parcelable {
     private String body;
     private String thumbnailUrl;
     private String photoUrl;
+    private float aspectRatio;
 
-    public Article(long id, String title, String date, String author, String body, String thumbnailUrl, String photoUrl) {
+    public Article(long id, String title, String date, String author, String body, String thumbnailUrl, String photoUrl, float aspectRatio) {
         this.id = id;
         this.title = title;
         this.date = date;
@@ -26,6 +27,7 @@ public class Article implements Parcelable {
         this.body = body;
         this.thumbnailUrl = thumbnailUrl;
         this.photoUrl = photoUrl;
+        this.aspectRatio = aspectRatio;
     }
 
     public long getId() {
@@ -49,6 +51,9 @@ public class Article implements Parcelable {
     public String getPhotoUrl() {
         return photoUrl;
     }
+    public float getAspectRatio() {
+        return aspectRatio;
+    }
 
     protected Article(Parcel in) {
         id = in.readLong();
@@ -58,6 +63,7 @@ public class Article implements Parcelable {
         body = in.readString();
         thumbnailUrl = in.readString();
         photoUrl = in.readString();
+        aspectRatio = in.readFloat();
     }
 
     public static final Creator<Article> CREATOR = new Creator<Article>() {
@@ -86,5 +92,6 @@ public class Article implements Parcelable {
         dest.writeString(body);
         dest.writeString(thumbnailUrl);
         dest.writeString(photoUrl);
+        dest.writeFloat(aspectRatio);
     }
 }

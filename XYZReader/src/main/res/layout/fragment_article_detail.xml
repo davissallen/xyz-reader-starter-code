@@ -1,28 +1,38 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="@dimen/nav_bar_height"
     android:background="@color/white">
 
-    <ImageButton
+    <!--<ImageButton-->
+    <!--android:id="@+id/share_fab"-->
+    <!--android:layout_width="56dp"-->
+    <!--android:layout_height="56dp"-->
+    <!--android:layout_gravity="bottom|end"-->
+    <!--android:layout_marginBottom="@dimen/fab_margin"-->
+    <!--android:layout_marginEnd="@dimen/fab_margin"-->
+    <!--android:background="@drawable/add_fab_background"-->
+    <!--android:contentDescription="@string/action_share"-->
+    <!--android:elevation="@dimen/fab_elevation"-->
+    <!--android:src="@drawable/ic_share"-->
+    <!--android:stateListAnimator="@anim/fab_state_list_anim" />-->
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/share_fab"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        app:rippleColor="@color/white"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:background="@drawable/add_fab_background"
-        android:contentDescription="@string/action_share"
-        android:elevation="@dimen/fab_elevation"
+        android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_share"
-        android:stateListAnimator="@anim/fab_state_list_anim" />
+        />
 
     <FrameLayout
         android:id="@+id/photo_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/detail_photo_height"
-        android:background="@color/photo_placeholder"
-        android:transitionName="@string/transitionImage">
+        android:background="@color/photo_placeholder">
 
         <ImageView
             android:id="@+id/photo"
@@ -58,7 +68,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#333"
-                android:elevation="4dp"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/detail_metabar_vert_padding"
                 android:paddingLeft="@dimen/detail_inner_horiz_margin"
@@ -89,6 +98,9 @@
                 android:id="@+id/rv_body_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingTop="@dimen/body_padding"
+                android:paddingStart="@dimen/body_padding"
+                android:paddingEnd="@dimen/body_padding"
                 android:background="@color/cardview_light_background">
 
             </android.support.v7.widget.RecyclerView>

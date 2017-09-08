@@ -178,7 +178,7 @@ public class ArticleListActivity extends AppCompatActivity implements
 
                         // Dynamically set transition name of list item on Click
                         final String transitionName = getString(R.string.transitionImage);
-                        final ImageView imageView = vh.thumbnailView;
+                        final DynamicHeightNetworkImageView imageView = vh.thumbnailView;
                         ViewCompat.setTransitionName(imageView, transitionName);
 
                         // add scene transition options
@@ -202,10 +202,10 @@ public class ArticleListActivity extends AppCompatActivity implements
             Article currentArticle = mArticles.get(position);
 
             // TODO: set image to some default image so initial loading doesn't look weird
-            String imageUrl = currentArticle.getThumbnailUrl();
-            if (imageUrl != null) {
-                Picasso.with(mContext).load(imageUrl).into(holder.thumbnailView);
-            }
+            holder.thumbnailView.setImageUrl(
+                    currentArticle.getThumbnailUrl(),
+                    ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
+            holder.thumbnailView.setAspectRatio(currentArticle.getAspectRatio());
 
             holder.titleView.setText(currentArticle.getTitle());
 
@@ -220,13 +220,13 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
     private static class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView thumbnailView;
+        private DynamicHeightNetworkImageView thumbnailView;
         private TextView titleView;
         private TextView subtitleView;
 
         private ViewHolder(View view) {
             super(view);
-            thumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
+            thumbnailView = (DynamicHeightNetworkImageView) view.findViewById(R.id.thumbnail);
             titleView = (TextView) view.findViewById(R.id.article_title);
             subtitleView = (TextView) view.findViewById(R.id.article_subtitle);
         }
