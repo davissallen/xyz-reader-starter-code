@@ -10,6 +10,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -51,7 +52,7 @@ public class ArticleListActivity extends AppCompatActivity implements
     private RecyclerView mRecyclerView;
     private Activity mActivity;
     private Context mContext;
-    private FrameLayout mToolbarContainer;
+    private AppBarLayout mToolbarContainer;
 
     // Bundle args
     public final static String EXTRA_INITIAL_POSITION = "extra_initial_position";
@@ -79,7 +80,7 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         mActivity = this;
         mContext = this;
-        mToolbarContainer = (FrameLayout) findViewById(R.id.toolbar_container);
+        mToolbarContainer = (AppBarLayout) findViewById(R.id.toolbar_container);
     }
 
     private void refresh() {
